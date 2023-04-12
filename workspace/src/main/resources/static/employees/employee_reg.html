@@ -1,0 +1,44 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <title>社員名簿Web管理システム（簡易版）</title>
+    <link rel="stylesheet" type="text/css" href="../css/style.css">
+    <!-- thymeleafでのcss参照が行えないため調査 -->
+    <!-- <link th:href="@{/css/style.css}" rel="styleSheet" type="text/css"> -->
+</head>
+<body>
+<table>
+    <thead>
+    <tr>
+        <th class="required">社員ID</th>
+        <td colspan="2"><input type="text" class="txt" required="required" maxlength="100" placeholder="例）YZ12345678" id="employee_id">
+    </tr>
+    <tr>
+        <th class="required">社員名</th>
+        <td><input type="text" class="txt2" required="required" maxlength="25" placeholder="姓" id="family_name">
+        <td><input type="text" class="txt2" required="required" maxlength="25" placeholder="名" id="first_name">
+    </tr>
+    <tr>
+        <th>所属セクション</th>
+        <td colspan="2"><select class="section" name="section_id">
+            <option value="1">シス開</option>
+            <option value="2">ビジソル</option>
+            <option value="3">サビ開</option>
+        </select>
+    </tr>
+    <tr>
+        <th>メールアドレス</th>
+        <td colspan="2"><input type="text" class="txt" maxlength="256" placeholder="例）taro_yaz@yaz.co.jp" id="mail">
+    </tr>
+    <tr>
+        <th class="required">性別</th>
+        <td><input type="radio" id="1" name="gender_id"><label for="1">男性</label>
+        <td><input type="radio" id="2" name="gender_id"><label for="2">女性</label>
+    </tr>
+    </thead>
+</table>
+<p><input type="submit" value="登録"></p>
+<a href="../index.html">メニュー画面</a>
+</body>
+</html>
