@@ -1,7 +1,11 @@
+th {
+    text-align: left;
+}
+
 /* テキストボックス,セレクトボックス */
 .txt,.section{
     display: inline-block;
-    width: 20em;
+    width: 100%;
     padding: 0.5em;
     border: 1px solid #999;
     box-sizing: border-box;
@@ -23,6 +27,13 @@
 /*必須項目*/
 .required::after {
   content: " *";
+  color: red;
+  vertical-align: middle;
+}
+
+/*必須項目(注釈)*/
+.annotation::before {
+  content: "* ";
   color: red;
   vertical-align: middle;
 }

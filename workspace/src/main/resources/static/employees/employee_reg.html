@@ -20,16 +20,17 @@
         <td><input type="text" class="txt2" required="required" maxlength="25" placeholder="名" id="first_name">
     </tr>
     <tr>
-        <th>所属セクション</th>
-        <td colspan="2"><select class="section" name="section_id">
+        <th class="required">所属セクション</th>
+        <td colspan="2"><select class="section" name="section_id" required>
+            <option value=""></option>
             <option value="1">シス開</option>
-            <option value="2">ビジソル</option>
-            <option value="3">サビ開</option>
+            <option value="2">グロカル</option>
+            <option value="3">ビジソル</option>
         </select>
     </tr>
     <tr>
-        <th>メールアドレス</th>
-        <td colspan="2"><input type="text" class="txt" maxlength="256" placeholder="例）taro_yaz@yaz.co.jp" id="mail">
+        <th class="required">メールアドレス</th>
+        <td colspan="2"><input type="text" class="txt" required="required" maxlength="256" placeholder="例）taro_yaz@yaz.co.jp" id="mail">
     </tr>
     <tr>
         <th class="required">性別</th>
@@ -38,6 +39,7 @@
     </tr>
     </thead>
 </table>
+<p class="annotation">必須項目</p>
 <p><input type="submit" value="登録"></p>
 <a href="../index.html">メニュー画面</a>
 </body>
