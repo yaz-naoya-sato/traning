@@ -1,28 +1,27 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ja">
 <head>
-    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>社員名簿Web管理システム（簡易版）</title>
-    <link rel="stylesheet" type="text/css" href="../css/style.css">
-    <!-- thymeleafでのcss参照が行えないため調査 -->
-    <!-- <link th:href="@{/css/style.css}" rel="styleSheet" type="text/css"> -->
+    <link th:href="@{/css/style.css}" rel="styleSheet" type="text/css">
 </head>
 <body>
+<form name="myForm" th:action="@{/employees/employee_reg}" onsubmit="return validateForm()" th:object="${Employee}" method="post">
 <table>
     <thead>
     <tr>
         <th class="required">社員ID</th>
-        <td colspan="2"><input type="text" class="txt" required="required" maxlength="100" placeholder="例）YZ12345678" id="employee_id">
+        <td colspan="2"><input type="text" class="txt" id="employee_id" name="employee_id" placeholder="例）YZ12345678">
     </tr>
     <tr>
         <th class="required">社員名</th>
-        <td><input type="text" class="txt2" required="required" maxlength="25" placeholder="姓" id="family_name">
-        <td><input type="text" class="txt2" required="required" maxlength="25" placeholder="名" id="first_name">
+        <td><input type="text" class="txt2" id="family_name" name="family_name" placeholder="姓">
+        <td><input type="text" class="txt2" id="first_name" name="first_name" placeholder="名">
     </tr>
     <tr>
         <th class="required">所属セクション</th>
-        <td colspan="2"><select class="section" name="section_id" required>
-            <option value=""></option>
+        <td colspan="2"><select class="section" id="section_id" name="section_id">
+            <option value="">選択してください</option>
             <option value="1">シス開</option>
             <option value="2">グロカル</option>
             <option value="3">ビジソル</option>
@@ -30,7 +29,7 @@
     </tr>
     <tr>
         <th class="required">メールアドレス</th>
-        <td colspan="2"><input type="text" class="txt" required="required" maxlength="256" placeholder="例）taro_yaz@yaz.co.jp" id="mail">
+        <td colspan="2"><input type="text" class="txt" id="mail" name="mail" placeholder="例）taro_yaz@yaz.co.jp">
     </tr>
     <tr>
         <th class="required">性別</th>
@@ -41,6 +40,8 @@
 </table>
 <p class="annotation">必須項目</p>
 <p><input type="submit" value="登録"></p>
-<a href="../index.html">メニュー画面</a>
+</form>
+<a href="../">メニュー画面</a>
 </body>
+<script th:src="@{/js/validate.js}" type="text/javascript"></script>
 </html>

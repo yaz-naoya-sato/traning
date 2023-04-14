@@ -8,10 +8,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Entity
 @Data
 @Table(name = "employees")
-public class Employee {
+public class Employee implements Serializable {
     // 社員ID
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,4 +26,17 @@ public class Employee {
     // 社員名(名)
     @Column(nullable = false)
     private String first_name;
+
+    // 所属セクション
+    @Column(nullable = false)
+    private String section_id;
+
+    // メールアドレス
+    @Column(nullable = false)
+    private String mail;
+
+    // 性別
+    @Column(nullable = false)
+    private String gender_id;
+
 }
