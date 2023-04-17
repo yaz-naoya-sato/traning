@@ -24,15 +24,26 @@ public class EmployeeController {
     }
 
     @PostMapping("/employee_reg")
-    public String submitReg(@ModelAttribute Employee employee, Model model) {
-        // employeeに入力フォームの内容が格納されているため初期化
-        model.addAttribute("employees", new Employee());
+    public String create(@ModelAttribute Employee employee, Model model) throws Exception {
 
-        return "employees/employee_reg";
+        try {
+            // サービスのcreateメソッド呼び出し
+            employeeService.create(employee);
+
+            // employeeに入力フォームの内容が格納されているため初期化
+            model.addAttribute("employees", new Employee());
+
+            // DBコミットが成功した場合は、成功メッセージを表示
+            model.addAttribute("res","データを登録しました");
+        } catch (Exception e) {
+            model.addAttribute("res","データ登録に失敗しました");
+        }
+
+        return "employees/employee_result";
     }
 
     //社員一覧
-    @GetMapping("/employees/employee_list")
+    @GetMapping("/employee_list")
     public String getList(Model model) {
         List<Employee> employees = employeeService.getEmployees();
         // 変数名employeesに値をセットしてThymeleafに渡す

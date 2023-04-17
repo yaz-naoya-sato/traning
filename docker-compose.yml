@@ -9,6 +9,12 @@ services:
     working_dir: /workspace
     tty: true
 
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8090:8080
+
   db:
     build: ./infra/mysql
     volumes:

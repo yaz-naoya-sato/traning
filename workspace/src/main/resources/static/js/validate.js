@@ -10,7 +10,7 @@ function validateForm() {
   // 社員IDの桁数
   var id_count = 10
   // 社員名（姓、名）の最大桁数
-  var name_count = 25
+  var name_count = 20
   // メールアドレスの最大桁数
   var mail_count = 256
   // 社員IDの書式パターン

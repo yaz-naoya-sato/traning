@@ -12,31 +12,35 @@ import java.io.Serializable;
 
 @Entity
 @Data
-@Table(name = "employees")
+@Table(name = "employee")
 public class Employee implements Serializable {
-    // 社員ID
+    // ID
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    // 社員ID
+    @Column(length=10, nullable = false)
     private String employee_id;
 
     // 社員名(姓)
-    @Column(nullable = false)
+    @Column(length=20, nullable = false)
     private String family_name;
 
     // 社員名(名)
-    @Column(nullable = false)
+    @Column(length=20, nullable = false)
     private String first_name;
 
     // 所属セクション
     @Column(nullable = false)
-    private String section_id;
+    private int section_id;
 
     // メールアドレス
-    @Column(nullable = false)
+    @Column(length=256, nullable = false)
     private String mail;
 
     // 性別
     @Column(nullable = false)
-    private String gender_id;
+    private int gender_id;
 
 }

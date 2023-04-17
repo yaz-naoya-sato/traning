@@ -10,12 +10,18 @@
     <tr>
         <th>社員ID</th>
         <th>社員名</th>
+        <th>所属セクション</th>
+        <th>メールアドレス</th>
+        <th>性別</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="employee : ${employees}" th:object="${employee}">
         <td th:text="*{employee_id}"></td>
-        <td th:text="*{name}"></td>
+        <td th:text="*{first_name}"></td>
+        <td th:text="*{section_id}"></td>
+        <td th:text="*{mail}"></td>
+        <td th:text="*{gender_id}"></td>
     </tr>
     </tbody>
 </table>
