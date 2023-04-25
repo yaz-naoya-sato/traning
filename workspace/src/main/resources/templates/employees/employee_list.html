@@ -17,12 +17,21 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="employee : ${employees}" th:object="${employee}">
-        <td th:text="*{employee_id}"></td>
-        <td th:text="*{first_name}"></td>
-        <td th:text="*{section_id}"></td>
+    <tr th:each="employee : ${employee}" th:object="${employee}">
+        <td th:text="*{employeeId}"></td>
+        <td th:text="*{familyName} + ' ' + *{firstName}"></td>
+        <td th:switch="*{section_id}">
+            <span th:case="1">シス開</span>
+            <span th:case="2">グロカル</span>
+            <span th:case="3">ビジソル</span>
+            <span th:case="*">対象なし</span>
+        </td>
         <td th:text="*{mail}"></td>
-        <td th:text="*{gender_id}"></td>
+        <td th:switch="*{gender_id}">
+            <span th:case="1">男性</span>
+            <span th:case="2">女性</span>
+            <span th:case="*">対象なし</span>
+        </td>
     </tr>
     </tbody>
 </table>

@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,7 +62,13 @@ public class EmployeeService {
         return employeeRepository.findByEmployeeId(employeeId);
     }
 
+    /**
+     * 社員情報一覧
+     * 条件：社員IDの昇順
+     * @return 社員情報一覧
+     */
     public List<Employee> getEmployees() {
-        return employeeRepository.findAll();
+        return employeeRepository.findAll(Sort.by(Sort.Direction.ASC, "employeeId")
+        );
     }
 }

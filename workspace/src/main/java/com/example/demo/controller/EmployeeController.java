@@ -13,12 +13,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -36,26 +35,6 @@ public class EmployeeController {
     @Autowired
     private Validator validator;
 
-//    /**
-//     * Controllerの初期処理を実施
-//     * @param binder
-//     *
-//     */
-//    @InitBinder
-//    public void initBinder(WebDataBinder binder) {
-//        // Integer型に想定外の文字(String)が入力・POSTされた場合に0に変換
-//        binder.registerCustomEditor(Integer.class, new PropertyEditorSupport() {
-//            @Override
-//            public void setAsText(String text) throws IllegalArgumentException {
-//                try {
-//                    setValue(Integer.parseInt(text));
-//                } catch (NumberFormatException e) {
-//                    setValue(0);
-//                }
-//            }
-//        });
-//    }
-
     /**
      * 社員情報登録画面の呼び出し
      * @return 社員情報登録画面
@@ -63,7 +42,6 @@ public class EmployeeController {
     @GetMapping("/employee_reg")
     public String initReg(Employee employee, Model model) {
         logger.debug("社員情報登録画面の呼び出しを実施します。");
-        model.addAttribute("infoMessage", "初期処理完了");
         model.addAttribute(employee);
         // 社員情報登録画面の返却
         return "employees/employee_reg";
@@ -126,17 +104,21 @@ public class EmployeeController {
     }
 
     /**
-     *
+     * 社員情報一覧画面の呼び出し＆会員一覧表示
      * @param model
      * @return
      */
     //社員一覧
     @GetMapping("/employee_list")
     public String getList(Model model) {
-        List<Employee> employees = employeeService.getEmployees();
+        List<Employee> employee = employeeService.getEmployees();
+        Map<String, String> sections = new LinkedHashMap<String, String>();
+
         // 変数名employeesに値をセットしてThymeleafに渡す
-        model.addAttribute("employees", employees);
+        model.addAttribute("employee", employee);
+
         // src/main/resources/static/employees/employee_list.htmlを表示する
         return "employees/employee_list";
     }
+
 }
