@@ -121,4 +121,21 @@ public class EmployeeController {
         return "employees/employee_list";
     }
 
+    /**
+     * 社員情報参照画面の表示
+     * @param id
+     * @param model
+     * @return
+     */
+    @RequestMapping("/employee_detail")
+    public String displayView(@RequestParam("id") Integer id, Model model){
+        logger.debug("社員情報詳細画面の呼び出しを実施します。");
+
+        // IDによるEmployeeテーブルの検索
+        Employee employee = employeeService.findById(id);
+        model.addAttribute("employee",employee);
+
+        // 社員情報詳細画面の返却
+        return "employees/employee_detail";
+    }
 }

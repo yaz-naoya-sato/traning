@@ -57,6 +57,15 @@ public class EmployeeService {
 
     }
 
+    /**IDで検索*/
+    public Employee findById(Integer id) {
+        Employee employee = employeeRepository.findById(id).orElse(null);
+        if (employee == null){
+            return new Employee();
+        }
+        return employee;
+    }
+
     /**社員IDで検索*/
     public Optional<Employee> findByEmployeeId(String employeeId) {
         return employeeRepository.findByEmployeeId(employeeId);
