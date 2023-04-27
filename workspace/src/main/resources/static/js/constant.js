@@ -62,3 +62,8 @@ function readFirst(){
       radioDiv.appendChild(label);
     }
 };
+
+function deleteDialog(){
+     // 「OK」時の処理開始 ＋ 確認ダイアログの表示
+   	 return window.confirm('データを削除します。\r\nよろしいですか？');
+};

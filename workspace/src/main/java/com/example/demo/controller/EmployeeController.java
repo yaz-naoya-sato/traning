@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.ui.Model;
@@ -55,7 +56,7 @@ public class EmployeeController {
     @GetMapping("/employee_reg")
     public String initReg(Employee employee, Model model) {
         logger.debug("社員情報登録画面の呼び出しを実施します。");
-        model.addAttribute(employee);
+        model.addAttribute(new Employee());
         // 社員情報登録画面の返却
         return "employees/employee_reg";
     }
@@ -226,6 +227,54 @@ public class EmployeeController {
             model.addAttribute("res","データ更新に失敗しました");
         }
         logger.debug("社員情報登録_結果画面への返却を実施します。");
+        // 社員情報登録_結果画面の返却
+        return "employees/employee_result";
+    }
+
+    /**
+     * Postされた社員情報の削除
+     * @param employee 削除対象の社員情報
+     * @param model
+     * @return 社員情報削除_結果画面
+     */
+    @PostMapping(value="/employee_result", params="employeeDelete")
+    public String employeeDelete(@ModelAttribute Employee employee,
+                               Model model) {
+
+        try {
+            logger.debug("社員情報削除メソッド(service)の呼び出しを実施します。");
+            // update
+            employeeService.delete(employee);
+
+            // employeeに入力フォームの内容が格納されているため初期化
+            model.addAttribute("employee", new Employee());
+
+            // DBコミットが成功した場合は、成功メッセージを表示
+            model.addAttribute("res", "データを削除しました");
+
+            // catchが冗長のため共通化対応 TODO
+        } catch (CannotCreateTransactionException ex) {
+            // トランザクションを作成できない場合は、失敗メッセージを表示
+            logger.error("トランザクションの作成に失敗しました。\r\n" + ex);
+            model.addAttribute("res","データ削除に失敗しました");
+        } catch (IllegalArgumentException ex) {
+            // 不正、不適切な引数エラー
+            logger.error("不正な引数が渡されました。\r\n" + ex);
+            model.addAttribute("res","データ削除に失敗しました");
+        } catch (OptimisticLockingFailureException ex) {
+            // 対象データなしエラー
+            logger.error("対象データが存在しません\r\n" + ex);
+            model.addAttribute("res","データ削除に失敗しました");
+        } catch (DataAccessException ex) {
+            // データアクセス例外
+            logger.error("データアクセス例外が発生しました。\r\n" + ex);
+            model.addAttribute("res","データ削除に失敗しました");
+        } catch (Exception ex) {
+            // DBコミットが失敗した場合は、失敗メッセージを表示
+            logger.error("予期しないエラーが発生しました。\r\n" + ex);
+            model.addAttribute("res","データ削除に失敗しました");
+        }
+        logger.debug("社員情報削除_結果画面への返却を実施します。");
         // 社員情報登録_結果画面の返却
         return "employees/employee_result";
     }
