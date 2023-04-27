@@ -1,6 +1,5 @@
 package com.example.demo.entity;
 
-import com.example.demo.Duplication;
 import jakarta.persistence.*;
 import jakarta.validation.GroupSequence;
 import jakarta.validation.constraints.NotEmpty;
@@ -10,6 +9,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -19,14 +19,23 @@ import java.io.Serializable;
 @Data // getter/setterなどの自動実装
 @Table(name = "employee")
 public class Employee implements Serializable {
-    public interface Group1 {}
-    public interface Group2 {}
-    public interface Group3 {}
-    public interface Group4 {}
-    public interface Group5 {}
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    // 必須チェックグループ
+    public interface requiredGroup {}
+
+    // 桁数チェックグループ
+    public interface digitGroup {}
+
+    // 最大桁数チェックグループ
+    public interface maxDigitGroup {}
+
+    // 書式チェックグループ
+    public interface formatGroup {}
 
 
-    @GroupSequence({Group1.class,Group2.class,Group3.class,Group4.class,Group5.class})
+    @GroupSequence({requiredGroup.class, digitGroup.class, maxDigitGroup.class, formatGroup.class})
     public interface All {}
 
 
@@ -37,40 +46,39 @@ public class Employee implements Serializable {
 
     // 社員ID
     @Column(name = "employee_id")
-    @NotEmpty(message = "社員IDを入力してください", groups = Group1.class)
-    @Length(min = 10, max = 10, message = "社員IDは10文字で入力してください", groups = Group2.class)
-    @Duplication(groups = Group4.class)
-    @Pattern(regexp="^YZ\\d{8}$", message = "社員IDを正しく入力してください", groups = Group5.class)
+    @NotEmpty(message = "社員IDを入力してください", groups = requiredGroup.class)
+    @Length(min = 10, max = 10, message = "社員IDは10文字で入力してください", groups = digitGroup.class)
+    @Pattern(regexp="^YZ\\d{8}$", message = "社員IDを正しく入力してください", groups = formatGroup.class)
     private String employeeId;
 
     // 社員名(姓)
     @Column(name = "family_name")
-    @NotEmpty(message = "社員名(姓)を入力してください", groups = Group1.class)
-    @Length(min = 0, max = 20,message = "社員名(姓)は20文字以下で入力してください", groups = Group3.class)
+    @NotEmpty(message = "社員名(姓)を入力してください", groups = requiredGroup.class)
+    @Length(min = 0, max = 20,message = "社員名(姓)は20文字以下で入力してください", groups = maxDigitGroup.class)
     private String familyName;
 
     // 社員名(名)
     @Column(name = "first_name")
-    @NotEmpty(message = "社員名(名)を入力してください", groups = Group1.class)
-    @Length(min = 0, max = 20, message = "社員名(名)は20文字以下で入力してください", groups = Group3.class)
+    @NotEmpty(message = "社員名(名)を入力してください", groups = requiredGroup.class)
+    @Length(min = 0, max = 20, message = "社員名(名)は20文字以下で入力してください", groups = maxDigitGroup.class)
     private String firstName;
 
     // 所属セクション
     //@Column(name = "section_id")
-    @NotNull(message = "所属セクションを選択してください", groups = Group1.class)
-    @Range(min = 1, max = 3, message = "所属セクションを選択してください", groups = Group1.class)
+    @NotNull(message = "所属セクションを選択してください", groups = requiredGroup.class)
+    @Range(min = 1, max = 3, message = "所属セクションを選択してください", groups = requiredGroup.class)
     private Integer section_id;
 
     // メールアドレス
-    @NotEmpty(message = "メールアドレスを入力してください", groups = Group1.class)
-    @Length(min = 0, max = 256,message = "メールアドレスは256文字以下で入力してください", groups = Group3.class)
-    @Pattern(regexp="^[a-zA-Z0-9_.-]+@[a-zA-Z0-9_.-]+$", message = "メールアドレスを正しく入力してください", groups = Group5.class)
+    @NotEmpty(message = "メールアドレスを入力してください", groups = requiredGroup.class)
+    @Length(min = 0, max = 256,message = "メールアドレスは256文字以下で入力してください", groups = maxDigitGroup.class)
+    @Pattern(regexp="^[a-zA-Z0-9_.-]+@[a-zA-Z0-9_.-]+$", message = "メールアドレスを正しく入力してください", groups = formatGroup.class)
     private String mail;
 
     // 性別
     //@Column(name = "gender_id")
-    @NotNull(message = "性別を選択してください", groups = Group1.class)
-    @Range(min = 1, max = 2, message = "性別を選択してください", groups = Group1.class)
+    @NotNull(message = "性別を選択してください", groups = requiredGroup.class)
+    @Range(min = 1, max = 2, message = "性別を選択してください", groups = requiredGroup.class)
     private Integer gender_id;
 
 }

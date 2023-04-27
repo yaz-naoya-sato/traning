@@ -24,6 +24,16 @@ public class EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
+    public boolean isInsertDuplication(String employeeId){
+
+        Employee employee = employeeRepository.findByEmployeeId(employeeId).orElse(null);;
+        if (employee == null){
+            return true;
+        }
+        return false;
+
+    }
+
     /**
      * 社員情報登録サービスメソッド
      * @param employee 社員情報
@@ -57,6 +67,39 @@ public class EmployeeService {
 
     }
 
+    /**
+     * 社員情報更新サービスメソッド
+     * @param employee 社員情報
+     * @throws Exception
+     */
+    @Transactional(rollbackFor = Exception.class) // メソッド開始時にトランザクションを開始、終了時にコミットする
+    public void update(Employee employee) throws DuplicateKeyException, IllegalArgumentException, DataAccessException{
+
+        try {
+            logger.debug("社員情報の更新を実施します。");
+
+            // JpaRepositoryから継承したsaveメソッドを使用
+            // employeeエンティティの中身をDBに登録
+            employeeRepository.save(employee);
+
+            logger.debug("社員情報の更新が完了しました。");
+
+        } catch (DuplicateKeyException ex) {
+            // データ整合性エラー
+            logger.error("社員IDが重複しています。社員ID:{}\r\n" + ex, employee.getEmployeeId());
+            throw ex;
+        } catch (IllegalArgumentException ex) {
+            // 不正、不適切な引数エラー
+            logger.error("不正な引数が渡されました。引数リスト:{}\r\n" + ex, employee);
+            throw ex;
+        } catch (DataAccessException ex) {
+            // データアクセス例外
+            logger.error("データアクセス例外が発生しました。\r\n" + ex);
+            throw ex;
+        }
+
+    }
+
     /**IDで検索*/
     public Employee findById(Integer id) {
         Employee employee = employeeRepository.findById(id).orElse(null);
@@ -66,7 +109,8 @@ public class EmployeeService {
         return employee;
     }
 
-    /**社員IDで検索*/
+
+    /**社員IDで検索し、重複を確認*/
     public Optional<Employee> findByEmployeeId(String employeeId) {
         return employeeRepository.findByEmployeeId(employeeId);
     }

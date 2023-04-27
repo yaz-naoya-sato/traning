@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.Validator;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,9 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/employees")
+@SessionAttributes(types = Employee.class)
 public class EmployeeController {
+
     // LOGGER 共通化実施予定 TODO
     private static final Logger logger = LoggerFactory.getLogger(EmployeeController.class);
     /**
@@ -34,6 +37,16 @@ public class EmployeeController {
     private EmployeeService employeeService;
     @Autowired
     private Validator validator;
+
+    /**
+     *
+     * @return
+     */
+    @ModelAttribute("employee")
+    private Employee setEmployee() {
+        logger.debug("社員Entityのセッションを作成");
+        return new Employee();
+    }
 
     /**
      * 社員情報登録画面の呼び出し
@@ -62,6 +75,13 @@ public class EmployeeController {
         try {
             logger.debug("POSTされた社員情報のバリデーションを実施します。");
             // 入力チェック判定
+
+            // 社員ID重複チェック(更新時のBeanValidationを考慮)
+            if (!employeeService.isInsertDuplication(employee.getEmployeeId())){
+                FieldError fieldError = new FieldError(bindingResult.getObjectName(), "employeeId", "エラー");
+
+                bindingResult.addError(fieldError);
+            }
 
             if (bindingResult.hasErrors()){
                 logger.warn("入力チェックエラーが発生しました。");
@@ -127,15 +147,86 @@ public class EmployeeController {
      * @param model
      * @return
      */
-    @RequestMapping("/employee_detail")
-    public String displayView(@RequestParam("id") Integer id, Model model){
+    @GetMapping("/employee_detail")
+    public String displayDetail(@RequestParam("id") Integer id, Model model){
         logger.debug("社員情報詳細画面の呼び出しを実施します。");
 
         // IDによるEmployeeテーブルの検索
         Employee employee = employeeService.findById(id);
+
         model.addAttribute("employee",employee);
 
         // 社員情報詳細画面の返却
         return "employees/employee_detail";
+    }
+
+    /**
+     * 社員情報編集画面の表示
+     * (社員情報参照画面の情報をsessionで持つ)
+     * @return
+     */
+    @PostMapping("/employee_edit")
+    // public String initEdit(@RequestParam("id") Integer id, Model model) {
+    public String initEdit(@ModelAttribute("employee") Employee employeeSession, Model model) {
+
+        // employeeをSessionで保持しているため、modelへのadd不要
+        return "employees/employee_edit";
+
+    }
+
+    /**
+     * Postされた社員情報のDB登録
+     * @param employee 社員(employee)テーブルのエンティティ
+     * @param bindingResult バリデーション結果を表すI/F
+     * @param model モデル属性を定義
+     * @return 社員情報登録_結果画面
+     */
+    @PostMapping(value="/employee_edit", params="employeeEdit")
+    public String employeeEdit(@ModelAttribute @Validated(Employee.All.class) @Valid Employee employee,
+                              BindingResult bindingResult,
+                              Model model) {
+
+        try {
+            logger.debug("POSTされた社員情報のバリデーションを実施します。");
+            // 入力チェック判定
+
+            if (bindingResult.hasErrors()){
+                logger.warn("入力チェックエラーが発生しました。");
+
+                model.addAttribute(employee);
+                return "employees/employee_edit";
+            }
+
+            logger.debug("社員情報更新メソッド(service)の呼び出しを実施します。");
+            // update
+            employeeService.update(employee);
+
+            // employeeに入力フォームの内容が格納されているため初期化
+            model.addAttribute("employee", new Employee());
+
+            // DBコミットが成功した場合は、成功メッセージを表示
+            model.addAttribute("res", "データを更新しました");
+
+            // catchが冗長のため共通化対応 TODO
+        } catch (CannotCreateTransactionException ex) {
+            // トランザクションを作成できない場合は、失敗メッセージを表示
+            logger.error("トランザクションの作成に失敗しました。\r\n" + ex);
+            model.addAttribute("res","データ更新に失敗しました");
+        } catch (IllegalArgumentException ex) {
+            // 不正、不適切な引数エラー
+            logger.error("不正な引数が渡されました。\r\n" + ex);
+            model.addAttribute("res","データ更新に失敗しました");
+        } catch (DataAccessException ex) {
+            // データアクセス例外
+            logger.error("データアクセス例外が発生しました。\r\n" + ex);
+            model.addAttribute("res","データ更新に失敗しました");
+        } catch (Exception ex) {
+            // DBコミットが失敗した場合は、失敗メッセージを表示
+            logger.error("予期しないエラーが発生しました。\r\n" + ex);
+            model.addAttribute("res","データ更新に失敗しました");
+        }
+        logger.debug("社員情報登録_結果画面への返却を実施します。");
+        // 社員情報登録_結果画面の返却
+        return "employees/employee_result";
     }
 }
